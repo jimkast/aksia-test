@@ -1,18 +1,19 @@
-using System.ComponentModel.DataAnnotations;
-using System.Net.Mail;
-using CsvHelper.Configuration.Attributes;
-
 namespace TransactionApi.Models;
 
 public class Currency
 {
-    public Currency(string code, string symbol, string name) {
-        this.Code = code;
-        this.Symbol = symbol;
-        this.Name = name;
+
+    public Currency() {
     }
-    
+
+    public Currency(string code, string symbol, string name, int fractionDigits) {
+        Code = code;
+        Symbol = symbol;
+        Name = name;
+        FractionDigits = fractionDigits;
+    }      
     public required string Code { get; set; }
     public required string Symbol { get; set; }
     public required string Name { get; set; }
+    public required int FractionDigits { get; set; }
 }

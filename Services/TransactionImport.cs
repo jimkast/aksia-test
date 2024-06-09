@@ -3,22 +3,11 @@ using CsvHelper;
 using CsvHelper.Configuration;
 using TransactionApi.Models;
 
+namespace TransactionApi.Services;
+
 public class TransactionImport
 {
-
-    private async IAsyncEnumerable<IEnumerable<T>> Chunks<T>(int chunkSize, IAsyncEnumerable<T> stream)
-    {
-        int i = 0;
-        List<T> buffer = new List<T>();
-        await foreach (var chunk in stream) {
-            if (i++ % chunkSize == 0) {
-                buffer.Add(chunk);
-            }
-            yield return buffer;
-        }
-    }
-    
-    public async IAsyncEnumerable<TransactionModel> StreamRows(TextReader input)
+    public async IAsyncEnumerable<TransactionModel> StreamRows(TextReader input, Func<string, string?> curreniesMap, List<ErrorRowResult> errorsAccumulator)
     {
         using (input)
         {
@@ -29,26 +18,33 @@ public class TransactionImport
             int i = 0;
             csv.Context.RegisterClassMap<TransactionCsvMap>();
             var records = csv.GetRecordsAsync<TransactionCsvModel>();
-            await foreach (TransactionCsvModel record in records)
+            await foreach (var record in records)
             {
                 i++;
-                if (!record.Validate().Any())
+                var (errors, model) = record.ToModel(curreniesMap);
+                if (!errors.Any() && model != null)
                 {
-                    var model = record.ToModel();
-
-                    if (!model.Validate().Any())
+                    errors = model.Validate();
+                    if (!errors.Any())
                     {
                         yield return model;
                     }
                     else
                     {
-                        Console.WriteLine($"Error validating model {i} " + model);
-                        Console.WriteLine(model.Validate().First().ErrorMessage);
+                        Console.WriteLine($"Error validating model {i}.");
+                        Console.WriteLine(errors.First().ErrorMessage);
                     }
                 }
                 else
                 {
+                    
+                    errorsAccumulator.Add(new ErrorRowResult(i, errors.Select(e => e.ErrorMessage)));
                     Console.WriteLine($"Error validating row {i} " + record);
+                }
+                if (errors.Any()) {
+                    foreach (var err in errors) {
+                        errorsAccumulator.Add(new ErrorRowResult(i, errors.Select(e => e.ErrorMessage).Where(msg => msg != null).AsEnumerable<string>()));
+                    }
                 }
             }
         }

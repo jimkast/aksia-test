@@ -14,44 +14,44 @@ public class TransactionCsvModel
     public required string Amount { get; set; }
     public decimal? Allocation { get; set; }
 
-    public IEnumerable<ValidationResult> Validate()
+    public (IEnumerable<ValidationResult>, TransactionModel?) ToModel(Func<string, string?> curreniesMap)
     {
-        if (Amount.Length < 1 || !decimal.TryParse(Amount.AsSpan(1).Trim(), out _))
-        {
-            yield return new ValidationResult(
-                $"Invalid amount field '{Amount}'.",
-                [nameof(Amount)]);
+        var (successParse, currencyString, amountParsed) = TryParseAmountWithCurrencySymbol(Amount);
+        if (!successParse) {
+            return ([new ValidationResult(
+                $"Invalid amount or currency '{Amount}'.",
+                [nameof(Amount)])], null);
         }
-    }
+        var currencyCode = curreniesMap(currencyString);
+        if (currencyCode == null || currencyCode == "") {
+            return ([new ValidationResult(
+                $"Unknown currency symbol '{currencyString}'.",
+                [nameof(Amount)])], null);
+        }
 
-    public TransactionModel ToModel()
-    {
-        var currencySymbol = Amount[..1];
-        decimal amountParsed = decimal.Parse(Amount.Substring(1));
         var result = new TransactionModel
         {
-            // Id = Id,
+            Id = Id,
             ApplicationName = ApplicationName,
             Email = Email,
             Filename = Filename,
             Amount = amountParsed,
-            Currency = currencySymbol,
+            Currency = currencyCode,
             Inception = DateOnly.ParseExact(Inception, "M/d/yyyy"),
             Allocation = Allocation,
             Url = Url,
         };
-        if (Id != null && Id.HasValue) {
-            result.Id = Id.Value;
-        }
-        return result;
+        return ([], result);
     }
 
-    private (bool, string, decimal) TryParseAmountWithCurrencySymbol(string amount)
+    private static (bool, string, decimal) TryParseAmountWithCurrencySymbol(string amount)
     {
-        if (amount.Length < 1 || !decimal.TryParse(Amount.AsSpan(1).Trim(), out decimal amountParsed))
+        var amountString = new string(amount.SkipWhile(c => !char.IsDigit(c)).ToArray());
+        var currencyString = amount[..^amountString.Length].Trim();
+        if (amountString.Length == 0 || currencyString.Length == 0 || !decimal.TryParse(amountString, out decimal amountParsed))
         {
             return (false, "", 0);
         }
-        return (true, amount[..1], amountParsed);
+        return (true, currencyString, amountParsed);
     }
 }
