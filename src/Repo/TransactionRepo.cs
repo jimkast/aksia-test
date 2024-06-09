@@ -73,6 +73,7 @@ public class TransactionRepo
         }
         else
         {
+            dbContext.Attach(t);
             dbContext.Update(t);
         }
         int updated = await dbContext.SaveChangesAsync();

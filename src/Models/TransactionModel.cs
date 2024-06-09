@@ -77,7 +77,7 @@ public class TransactionModel
         else if (Filename != null && !ALLOWED_EXTENSIONS.Contains(Path.GetExtension(Filename).ToLower()))
         {
             yield return new ValidationResult(
-                $"Invalid filename extension for filename: '{Filename}'.",
+                $"Invalid filename extension for filename: '{Filename}'. (Only [{string.Join(" ", ALLOWED_EXTENSIONS)}] extensions are allowed)",
                 [nameof(Filename)]);
         }
     }

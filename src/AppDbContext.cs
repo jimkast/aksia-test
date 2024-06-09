@@ -3,12 +3,8 @@ using TransactionApi.Models;
 
 namespace TransactionApi;
 
-public class AppDbContext : DbContext
+public class AppDbContext(DbContextOptions options) : DbContext(options)
 {
-    public AppDbContext(DbContextOptions options) : base(options)
-    {
-    }
-
     public DbSet<TransactionModel> Transactions { get; set; }
     public DbSet<Currency> Currencies { get; set; }
 
@@ -23,7 +19,7 @@ public class AppDbContext : DbContext
         trans.Property(o => o.Url).HasColumnName("Url");
         trans.Property(o => o.Inception).IsRequired().HasColumnName("Inception");
         trans.Property(o => o.Amount).IsRequired().HasColumnName("Amount").HasPrecision(14, 2);
-        trans.Property(o => o.Currency).IsRequired().HasColumnName("Currency");
+        trans.Property(o => o.Currency).IsRequired().HasColumnName("Currency").HasMaxLength(3);
         trans.Property(o => o.Allocation).HasColumnName("Allocation").HasPrecision(7, 2);
 
 

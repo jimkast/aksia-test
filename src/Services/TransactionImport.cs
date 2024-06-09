@@ -29,21 +29,10 @@ public class TransactionImport
                     {
                         yield return model;
                     }
-                    else
-                    {
-                        Console.WriteLine($"Error validating model {i}.");
-                        Console.WriteLine(errors.First().ErrorMessage);
-                    }
-                }
-                else
-                {
-                    
-                    errorsAccumulator.Add(new ErrorRowResult(i, errors.Select(e => e.ErrorMessage)));
-                    Console.WriteLine($"Error validating row {i} " + record);
                 }
                 if (errors.Any()) {
                     foreach (var err in errors) {
-                        errorsAccumulator.Add(new ErrorRowResult(i, errors.Select(e => e.ErrorMessage).Where(msg => msg != null).AsEnumerable<string>()));
+                        errorsAccumulator.Add(new ErrorRowResult(i, errors.Select(e => e.ErrorMessage).Where(msg => msg != null).ToList()));
                     }
                 }
             }

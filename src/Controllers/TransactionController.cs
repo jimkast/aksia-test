@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using TransactionApi.Models;
 using TransactionApi.Services;
 using TransactionApi.Repo;
+using System.Net;
 
 namespace TransactionApi.Controllers;
 
@@ -37,7 +38,7 @@ public class TransactionController : ControllerBase
     public async Task<IActionResult> Get(string id)
     {
         var parseSuccess = Guid.TryParse(id, out Guid guid);
-        if (!parseSuccess) return NotFound();
+        if (!parseSuccess) return NotFound(null);
         var result = await repo.SingleById(guid);
         return result == null ? NotFound() : Ok(result);
     }
@@ -46,36 +47,42 @@ public class TransactionController : ControllerBase
     public async Task<IActionResult> Delete(string id)
     {
         var parseSuccess = Guid.TryParse(id, out Guid guid);
-        if (!parseSuccess) return NotFound();
+        if (!parseSuccess) return NotFound(null);
         var result = await repo.DeleteById(guid);
-        return result ? Ok() : NotFound();
+        return result ? Ok() : NotFound(null);
     }
 
     [HttpPost]
-    public async Task<TransactionModel> Upsert(TransactionModel payload)
+    public async Task<IActionResult> Upsert(TransactionModel payload)
     {
         var validationResult = payload.Validate();
         if (validationResult.Any())
         {
-
+            return ValidationProblem(validationResult.First().ErrorMessage);
         }
-        return await repo.Upsert(payload);
+        var result = await repo.Upsert(payload);
+        return Ok(result);
     }
 
     [HttpPost]
     [Route("upload")]
-    public async Task<TransactionImportResult> Upload()
+    public async Task<IActionResult> Upload()
     {
+        if ((Request.ContentType ?? "").ToLower() != "text/csv")
+        {
+            Response.StatusCode = (int)HttpStatusCode.UnsupportedMediaType;
+            return Content("Only text/csv 'Content-Type' is supported for import.");
+        }
         var start = DateTime.UtcNow;
         List<ErrorRowResult> errorAccumulator = [];
         var successRows = await repo.BulkMerge(svc.StreamRows(new StreamReader(Request.Body), currenciesSymbolIndex, errorAccumulator));
-        return new TransactionImportResult
+        return Ok(new TransactionImportResult
         {
             StartedAt = start,
-            Millis = (int)(DateTime.UtcNow - start).TotalMilliseconds,
+            DurationMillis = (int)(DateTime.UtcNow - start).TotalMilliseconds,
             SuccessTotalRows = successRows,
             ErrorTotalRows = errorAccumulator.Count,
             Details = errorAccumulator
-        };
+        });
     }
 }

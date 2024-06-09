@@ -1,0 +1,133 @@
+{
+	"info": {
+		"_postman_id": "d4ab95ed-e854-409a-ac6c-fbd74d99c9a5",
+		"name": "AksiaTest",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "15339212"
+	},
+	"item": [
+		{
+			"name": "Upload CSV",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "file",
+					"file": {
+						"src": "/home/jimkast/Downloads/MOCK_DATA .csv"
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5263/transactions/upload",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5263",
+					"path": [
+						"transactions",
+						"upload"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Paginated",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5263/transactions?page=1&count=5",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5263",
+					"path": [
+						"transactions"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "count",
+							"value": "5"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get By Id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5263/transactions/2214c3f4-028d-447c-a6ba-7b8358cbb08f",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5263",
+					"path": [
+						"transactions",
+						"2214c3f4-028d-447c-a6ba-7b8358cbb08f"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Upsert",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": \"2214c3f4-028d-447c-a6ba-7b8358cbb08f\",\n    \"applicationName\": \"Overhold123\",\n    \"email\": \"tdeya2@joomla.org\",\n    \"filename\": \"LuctusRutrumNulla.pdf\",\n    \"url\": \"https://microsoft.com\",\n    \"inception\": \"2017-04-04\",\n    \"amount\": 934.60,\n    \"currency\": \"USD\",\n    \"allocation\": 30.98\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5263/transactions",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5263",
+					"path": [
+						"transactions"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete By Id",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5263/transactions/2214c3f4-028d-447c-a6ba-7b8358cbb08f",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5263",
+					"path": [
+						"transactions",
+						"2214c3f4-028d-447c-a6ba-7b8358cbb08f"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
