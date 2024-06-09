@@ -28,7 +28,8 @@ Validated rows are imported regardless of errors in other rows.
 
 `Content-Type: text/csv`
 
-`<binary csv data in body link the MOCK_DATA.csv included>`
+`<binary csv data in body like the MOCK_DATA.csv included>`
+
 
 2. Get transactions paginated
 
