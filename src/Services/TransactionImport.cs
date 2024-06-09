@@ -31,9 +31,7 @@ public class TransactionImport
                     }
                 }
                 if (errors.Any()) {
-                    foreach (var err in errors) {
-                        errorsAccumulator.Add(new ErrorRowResult(i, errors.Select(e => e.ErrorMessage).Where(msg => msg != null).ToList()));
-                    }
+                    errorsAccumulator.Add(new ErrorRowResult(i, errors.Select(e => e.ErrorMessage).Where(msg => msg != null).ToList()));
                 }
             }
         }
