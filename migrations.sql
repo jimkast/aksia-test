@@ -31,3 +31,12 @@ create table dbo.Currencies
     FractionDigits int           not null
 )
 go
+
+INSERT INTO dbo.Currencies (Code, Symbol, Name, FractionDigits) VALUES (N'EUR', N'€', N'Euro', 2)
+GO
+
+INSERT INTO dbo.Currencies (Code, Symbol, Name, FractionDigits) VALUES (N'GBP', N'£', N'United Kingdom Pound', 2)
+GO
+
+INSERT INTO dbo.Currencies (Code, Symbol, Name, FractionDigits) VALUES (N'USD', N'$', N'United States Dollar', 2)
+GO

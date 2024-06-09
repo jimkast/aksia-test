@@ -10,7 +10,7 @@ SQL server **connection string** ("TransactionsSqlConnString") in **appsettings.
 
 
 ### Database preparation (SQL Server)
-Database and tables script is included in **migrations.sql** file
+Database and tables script and sample currenciess are included in **migrations.sql** file
 
 
 ### Http Api Quick docs
