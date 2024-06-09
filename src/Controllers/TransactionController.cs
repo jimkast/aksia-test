@@ -68,11 +68,11 @@ public class TransactionController : ControllerBase
     [Route("upload")]
     public async Task<IActionResult> Upload()
     {
-        if ((Request.ContentType ?? "").ToLower() != "text/csv")
-        {
-            Response.StatusCode = (int)HttpStatusCode.UnsupportedMediaType;
-            return Content("Only text/csv 'Content-Type' is supported for import.");
-        }
+        // if ((Request.ContentType ?? "").ToLower() != "text/csv")
+        // {
+        //     Response.StatusCode = (int)HttpStatusCode.UnsupportedMediaType;
+        //     return Content("Only text/csv 'Content-Type' is supported for import.");
+        // }
         var start = DateTime.UtcNow;
         List<ErrorRowResult> errorAccumulator = [];
         var successRows = await repo.BulkMerge(svc.StreamRows(new StreamReader(Request.Body), currenciesSymbolIndex, errorAccumulator));
