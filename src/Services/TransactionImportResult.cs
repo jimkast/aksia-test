@@ -1,5 +1,3 @@
-using TransactionApi.Models;
-
 namespace TransactionApi.Services;
 
 public class TransactionImportResult

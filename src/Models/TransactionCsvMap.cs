@@ -1,5 +1,4 @@
-using TransactionApi.Models;
-
+namespace TransactionApi.Models;
 public class TransactionCsvMap : CsvHelper.Configuration.ClassMap<TransactionCsvModel>
 {
     public TransactionCsvMap()

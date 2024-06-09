@@ -1,6 +1,5 @@
 using System.ComponentModel.DataAnnotations;
 using System.Net.Mail;
-using CsvHelper.Configuration.Attributes;
 
 namespace TransactionApi.Models;
 

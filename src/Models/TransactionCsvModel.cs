@@ -1,6 +1,4 @@
-using System.Collections;
 using System.ComponentModel.DataAnnotations;
-using CsvHelper.Configuration.Attributes;
 
 namespace TransactionApi.Models;
 
